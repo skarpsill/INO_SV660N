@@ -1,0 +1,64 @@
+//   This is a component for LinuxCNC HAL
+//   Copyright 2015 Frank Brossette
+//
+//   This program is free software; you can redistribute it and/or modify
+//   it under the terms of the GNU General Public License as published by
+//   the Free Software Foundation; either version 2 of the License, or
+//   (at your option) any later version.
+//
+//   This program is distributed in the hope that it will be useful,
+//   but WITHOUT ANY WARRANTY; without even the implied warranty of
+//   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//   GNU General Public License for more details.
+//
+//   You should have received a copy of the GNU General Public License
+//   along with this program; if not, write to the Free Software
+//   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+component servospindle "lathe spindle with servomotor and synchron motion";
+
+//---------------------------------------------------------------
+
+pin io  bit index_enable "index enable from/to motion";
+pin out bit index "generated index pulse";
+pin in  float pos_input "position from servo drive";
+pin out float pos_output "position to hal";
+pin out float derived_rpm "calculated rpm spindle";
+variable uint32_t new_counts;
+variable float previous_pos;
+variable float offset;
+
+//---------------------------------------------------------------
+
+function _;
+license "GPL";
+
+;;
+
+FUNCTION(_)
+{
+
+	new_counts = pos_input;
+
+	if (new_counts%100000 <= 1000)
+		index = 1;
+	else
+		index = 0;
+
+	if(index_enable && index)
+	{
+		offset = pos_input;
+		index_enable = 0;
+	}
+
+	pos_output = (pos_input - offset)/100000;
+
+	derived_rpm = (pos_input-previous_pos) * 1;
+
+	previous_pos = pos_input;
+	
+	
+}
+
+
+
