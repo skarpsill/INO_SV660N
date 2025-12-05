@@ -1,11 +1,11 @@
 #//////////////////////////////////////////////////////////////////////////
-### Example edit your ini and add :
+### Example edit your ini and add : / Пример: измените ini и добавьте:
 #
 #[HAL]
 #HALFILE = <your-machine-hal>.hal
 #HALFILE = xhc-whb04b-6.hal
 #
-## This section is for button mapping, you need to create for your own use.
+## This section is for button mapping, you need to create for your own use. / Этот раздел для назначения кнопок — настройте под себя.
 #[HALUI]
 #MDI_COMMAND=(debug,macro0)
 #MDI_COMMAND=(debug,macro1)
@@ -27,25 +27,25 @@
 #
 #//////////////////////////////////////////////////////////////////////////
 #
-### Hal File xhc_whb04b_6.hal Example for 3 axis but i hope this is easy to add missing axis:
+### Hal File xhc_whb04b_6.hal Example for 3 axis but i hope this is easy to add missing axis: / Пример xhc_whb04b_6.hal для 3 осей; недостающие оси можно добавить по аналогии.
 #
 
 # ######################################################################
-# load pendant components
+# load pendant components / Загрузка компонентов пульта
 # ######################################################################
 
 loadusr -W xhc-whb04b-6 -HsfB
 
 # ######################################################################
-# pendant signal configuration
+# pendant signal configuration / Конфигурация сигналов пульта
 # ######################################################################
 
-# On/Off signals
+# On/Off signals / Сигналы включения/выключения
 net machine.is-on                         halui.machine.is-on                   whb.halui.machine.is-on
 net pdnt.machine.on                       whb.halui.machine.on                  halui.machine.on
 net pdnt.machine.off                      whb.halui.machine.off                 halui.machine.off
 
-# program related signals
+# program related signals / Сигналы, связанные с программой
 net pdnt.program.is-idle                  whb.halui.program.is-idle             halui.program.is-idle
 net pdnt.program.is-paused                whb.halui.program.is-paused           halui.program.is-paused
 net pdnt.program-is-running               whb.halui.program.is-running          halui.program.is-running
@@ -54,7 +54,7 @@ net pdnt.program.pause                    whb.halui.program.pause               
 net pdnt.program.run                      whb.halui.program.run                 halui.program.run
 net pdnt.program.stop                     whb.halui.program.stop                halui.program.stop
 
-# machine mode related signals
+# machine mode related signals / Сигналы режимов станка
 net pdnt.mode.auto                        whb.halui.mode.auto                   halui.mode.auto
 net pdnt.mode.manual                      whb.halui.mode.manual                 halui.mode.manual
 net pdnt.mode.mdi                         whb.halui.mode.mdi                    halui.mode.mdi
@@ -66,12 +66,12 @@ net pdnt.mode.is-mdi                      halui.mode.is-mdi                     
 net pdnt.mode.is-joint                    halui.mode.is-joint                   whb.halui.mode.is-joint
 net pdnt.mode.is-teleop                   halui.mode.is-teleop                  whb.halui.mode.is-teleop
 
-# "is-homed" axis signal for allowing pendant when machine is not homed
+# "is-homed" axis signal for allowing pendant when machine is not homed / Сигнал "is-homed" для разрешения работы пульта без хоуминга
 net pdnt.axis.X.is-homed                  halui.joint.0.is-homed                whb.halui.joint.x.is-homed
 net pdnt.axis.Y.is-homed                  halui.joint.1.is-homed                whb.halui.joint.y.is-homed
 net pdnt.axis.Z.is-homed                  halui.joint.2.is-homed                whb.halui.joint.z.is-homed
 
-# "selected axis" signals
+# "selected axis" signals / Сигналы выбора оси
 net pdnt.axis.X.select                    whb.halui.axis.x.select               halui.axis.x.select
 net pdnt.axis.y.select                    whb.halui.axis.y.select               halui.axis.y.select
 net pdnt.axis.Z.select                    whb.halui.axis.z.select               halui.axis.z.select
@@ -93,48 +93,48 @@ net pdnt.axis.y.jog-vel-mode              whb.axis.y.jog-vel-mode               
 net pdnt.axis.z.jog-vel-mode              whb.axis.z.jog-vel-mode               axis.z.jog-vel-mode
 
 
-# macro buttons to MDI commands
-net pdnt.macro-1                          whb.button.macro-1                    lcec.0.6.dout-6 lcec.0.6.dout-7             # use MDI command from main.ini
-#net pdnt.macro-2                          whb.button.macro-2                    halui.mdi-command-02             # use MDI command from main.ini or used for Hardcoded lube on/off
-net pdnt.reserved.for.spindle+            whb.button.macro-3                                                     # Hardcoded for spindle+ whb.halui.spindle.increase
-net pdnt.reserved.for.spindle-            whb.button.macro-4                                                     # Hardcoded for spindle- whb.halui.spindle.decrease
-#net pdnt.macro-5                          whb.button.macro-5                    halui.mdi-command-05             # use MDI command from main.ini
-#net pdnt.macro-6                          whb.button.macro-6                    halui.mdi-command-06             # use MDI command from main.ini
-#net pdnt.macro-7                          whb.button.macro-7                    halui.mdi-command-07             # use MDI command from main.ini
-net pdnt.reserved.for.spindle.dir         whb.button.macro-8                                                     # Hardcoded for spindle direction inside pendant
-#net pdnt.macro-9                          whb.button.macro-9                    halui.mdi-command-09             # use MDI command from main.ini
-net pdnt.reserved.for.ABS-REL             whb.button.macro-10                                                    # Hardcoded for swap Dro  Relative/Absolue
-#net pdnt.macro-14                         whb.button.macro-14                   halui.mdi-command-14             # use MDI command from main.ini
-net pdnt.reserved.for.flood               whb.button.macro-15                                                    # Hardcoded for halui.flood on/off
-net pdnt.reserved.for.mist                whb.button.macro-16                                                    # Hardcoded for halui.mist on/off
+# macro buttons to MDI commands / Макрокнопки, привязанные к MDI-командам
+net pdnt.macro-1                          whb.button.macro-1                    lcec.0.6.dout-6 lcec.0.6.dout-7             # use MDI command from main.ini / использовать MDI-команду из main.ini
+#net pdnt.macro-2                          whb.button.macro-2                    halui.mdi-command-02             # use MDI command from main.ini or used for Hardcoded lube on/off / использовать MDI-команду из main.ini или жестко задать смазку вкл/выкл
+net pdnt.reserved.for.spindle+            whb.button.macro-3                                                     # Hardcoded for spindle+ whb.halui.spindle.increase / Жестко задано как увеличение оборотов шпинделя
+net pdnt.reserved.for.spindle-            whb.button.macro-4                                                     # Hardcoded for spindle- whb.halui.spindle.decrease / Жестко задано как уменьшение оборотов шпинделя
+#net pdnt.macro-5                          whb.button.macro-5                    halui.mdi-command-05             # use MDI command from main.ini / использовать MDI-команду из main.ini
+#net pdnt.macro-6                          whb.button.macro-6                    halui.mdi-command-06             # use MDI command from main.ini / использовать MDI-команду из main.ini
+#net pdnt.macro-7                          whb.button.macro-7                    halui.mdi-command-07             # use MDI command from main.ini / использовать MDI-команду из main.ini
+net pdnt.reserved.for.spindle.dir         whb.button.macro-8                                                     # Hardcoded for spindle direction inside pendant / Жестко задано переключение направления шпинделя в пульте
+#net pdnt.macro-9                          whb.button.macro-9                    halui.mdi-command-09             # use MDI command from main.ini / использовать MDI-команду из main.ini
+net pdnt.reserved.for.ABS-REL             whb.button.macro-10                                                    # Hardcoded for swap Dro  Relative/Absolue / Жестко задано переключение DRO относительное/абсолютное
+#net pdnt.macro-14                         whb.button.macro-14                   halui.mdi-command-14             # use MDI command from main.ini / использовать MDI-команду из main.ini
+net pdnt.reserved.for.flood               whb.button.macro-15                                                    # Hardcoded for halui.flood on/off / Жестко задано: flood вкл/выкл
+net pdnt.reserved.for.mist                whb.button.macro-16                                                    # Hardcoded for halui.mist on/off / Жестко задано: mist вкл/выкл
 
-#net pdnt.macro.11                         whb.button.macro-11                   halui.mdi-command-11             # use MDI command from main.ini
-#net pdnt.macro.12                         whb.button.macro-12                   halui.mdi-command-12             # use MDI command from main.ini
-#net pdnt.macro.13                         whb.button.macro-13                   halui.mdi-command-13             # use MDI command from main.ini
-
-
-# flood and mist toggle signals
-net  pdnt.flood.is-on                     whb.halui.flood.is-on                 halui.flood.is-on                #return signal is on or off
-net  pdnt.flood.off                       whb.halui.flood.off                   halui.flood.off                  #reserved whb.button.macro-15
-net  pdnt.flood.on                        whb.halui.flood.on                    halui.flood.on                   #reserved whb.button.macro-15
-
-net  pdnt.mist.is-on                      whb.halui.mist.is-on                  halui.mist.is-on                 #return signal is on or off
-net  pdnt.mist.off                        whb.halui.mist.off                    halui.mist.off                   #reserved whb.button.macro-16
-net  pdnt.mist.on                         whb.halui.mist.on                     halui.mist.on                    #reserved whb.button.macro-16
-
-#net  pdnt.lube.is-on                      whb.halui.lube.is-on                  halui.lube.is-on                 #return signal is on or off
-#net  pdnt.lube.off                        whb.halui.lube.off                    halui.lube.off                   #reserved whb.button.macro-2
-#net  pdnt.lube.on                         whb.halui.lube.on                     halui.lube.on                    #reserved whb.button.macro-2
+#net pdnt.macro.11                         whb.button.macro-11                   halui.mdi-command-11             # use MDI command from main.ini / использовать MDI-команду из main.ini
+#net pdnt.macro.12                         whb.button.macro-12                   halui.mdi-command-12             # use MDI command from main.ini / использовать MDI-команду из main.ini
+#net pdnt.macro.13                         whb.button.macro-13                   halui.mdi-command-13             # use MDI command from main.ini / использовать MDI-команду из main.ini
 
 
-# default function button signals
-#net pdnt.button.m-home                    whb.button.m-home                     halui.home-all                   # Homing use built-in halui home all
-#net pdnt.button.safe-z                    whb.button.safe-z                     halui.mdi-command-03             # Safe-z  use MDI command from main.ini
-#net pdnt.button.w-home                    whb.button.w-home                     halui.mdi-command-04             # Unpark  use MDI command from main.ini
-#net pdnt.button.probe-z                   whb.button.probe-z                    halui.mdi-command-08             # Probe-Z use MDI command from main.ini
+# flood and mist toggle signals / Сигналы управления поливом и туманом
+net  pdnt.flood.is-on                     whb.halui.flood.is-on                 halui.flood.is-on                #return signal is on or off / обратный сигнал состояния
+net  pdnt.flood.off                       whb.halui.flood.off                   halui.flood.off                  #reserved whb.button.macro-15 / зарезервировано под macro-15
+net  pdnt.flood.on                        whb.halui.flood.on                    halui.flood.on                   #reserved whb.button.macro-15 / зарезервировано под macro-15
+
+net  pdnt.mist.is-on                      whb.halui.mist.is-on                  halui.mist.is-on                 #return signal is on or off / обратный сигнал состояния
+net  pdnt.mist.off                        whb.halui.mist.off                    halui.mist.off                   #reserved whb.button.macro-16 / зарезервировано под macro-16
+net  pdnt.mist.on                         whb.halui.mist.on                     halui.mist.on                    #reserved whb.button.macro-16 / зарезервировано под macro-16
+
+#net  pdnt.lube.is-on                      whb.halui.lube.is-on                  halui.lube.is-on                 #return signal is on or off / обратный сигнал состояния
+#net  pdnt.lube.off                        whb.halui.lube.off                    halui.lube.off                   #reserved whb.button.macro-2 / зарезервировано под macro-2
+#net  pdnt.lube.on                         whb.halui.lube.on                     halui.lube.on                    #reserved whb.button.macro-2 / зарезервировано под macro-2
 
 
-# unused, just exposes pendant internal status or as basic button
+# default function button signals / Сигналы кнопок функций по умолчанию
+#net pdnt.button.m-home                    whb.button.m-home                     halui.home-all                   # Homing use built-in halui home all / Хоуминг через встроенную halui home-all
+#net pdnt.button.safe-z                    whb.button.safe-z                     halui.mdi-command-03             # Safe-z  use MDI command from main.ini / Безопасное Z через MDI из main.ini
+#net pdnt.button.w-home                    whb.button.w-home                     halui.mdi-command-04             # Unpark  use MDI command from main.ini / Разблокировка через MDI из main.ini
+#net pdnt.button.probe-z                   whb.button.probe-z                    halui.mdi-command-08             # Probe-Z use MDI command from main.ini / Зонд Z через MDI из main.ini
+
+
+# unused, just exposes pendant internal status or as basic button / Не используется, только выводит внутренние состояния пульта или базовые кнопки
 #net pdnt.mode-lead                        whb.halui.feed.selected-lead
 #net pdnt.mode-mpg-feed                    whb.halui.feed.selected-mpg-feed
 #net pdnt.mode-continuous                  whb.halui.feed.selected-continuous
@@ -153,45 +153,43 @@ net  pdnt.mist.on                         whb.halui.mist.on                     
 #net pdnt.button.feed-minus                whb.button.feed-minus
 
 
-# spindle related signals
+# spindle related signals / Сигналы, относящиеся к шпинделю
 #net pdnt.spindle.is-on                    whb.halui.spindle.is-on               spindle.0.on
 net pdnt.spindle.start                    whb.halui.spindle.start               halui.spindle.0.start
 net pdnt.spindle.stop                     whb.halui.spindle.stop                halui.spindle.0.stop
 net pdnt.spindle.forward                  whb.halui.spindle.forward             halui.spindle.0.forward
 net pdnt.spindle.reverse                  whb.halui.spindle.reverse             halui.spindle.0.reverse
-net pdnt.spindle.increase                 whb.halui.spindle.increase            halui.spindle.0.increase         # reserved whb.button.macro-3
-net pdnt.spindle.decrease                 whb.halui.spindle.decrease            halui.spindle.0.decrease         # reserved whb.button.macro-4
-net pdnt.spindle-speed-abs                whb.halui.spindle-speed-cmd           spindle.0.speed-out-abs          # speed cmd from motion in rpm absolue
+net pdnt.spindle.increase                 whb.halui.spindle.increase            halui.spindle.0.increase         # reserved whb.button.macro-3 / зарезервировано под macro-3
+net pdnt.spindle.decrease                 whb.halui.spindle.decrease            halui.spindle.0.decrease         # reserved whb.button.macro-4 / зарезервировано под macro-4
+net pdnt.spindle-speed-abs                whb.halui.spindle-speed-cmd           spindle.0.speed-out-abs          # speed cmd from motion in rpm absolue / команда скорости от motion в об/мин (абсолют)
 
 
-# spindle speed override signals
-net pdnt.spindle-override.scale           whb.halui.spindle-override.scale      halui.spindle.0.override.scale   # needed for both spindle+/- and spindleoverride+/- button
-net pdnt.spindle.override.value           halui.spindle.0.override.value        whb.halui.spindle-override.value # GUI feed rate related signals
+# spindle speed override signals / Сигналы переопределения скорости шпинделя
+net pdnt.spindle-override.scale           whb.halui.spindle-override.scale      halui.spindle.0.override.scale   # needed for both spindle+/- and spindleoverride+/- button / нужно для кнопок spindle+/- и override+/- 
+net pdnt.spindle.override.value           halui.spindle.0.override.value        whb.halui.spindle-override.value # GUI feed rate related signals / сигналы подачи из интерфейса
 net pdnt.spindle.override.increase        whb.halui.spindle-override.increase   halui.spindle.0.override.increase
 net pdnt.spindle.override.decrease        whb.halui.spindle-override.decrease   halui.spindle.0.override.decrease
 
 
-# GUI feed rate related signals can be used when program is running moving GUI slider
-net pdnt.feed-override.scale              whb.halui.feed-override.scale         halui.feed-override.scale        # needed for both FeedOverride+/- and rotary knob button
-net pdnt.max-velocity.value               whb.halui.max-velocity.value          halui.max-velocity.value         # needed for Mpg mode : button feed position% * max-velocity = Mpg feedrate
+# GUI feed rate related signals can be used when program is running moving GUI slider / Сигналы подачи из GUI, применимые при движении бегунка в процессе программы
+net pdnt.feed-override.scale              whb.halui.feed-override.scale         halui.feed-override.scale        # needed for both FeedOverride+/- and rotary knob button / требуется для кнопок FeedOverride+/- и поворотного переключателя
+net pdnt.max-velocity.value               whb.halui.max-velocity.value          halui.max-velocity.value         # needed for Mpg mode : button feed position% * max-velocity = Mpg feedrate / нужно для режима MPG: позиция кнопки подачи% * max-velocity = скорость MPG
 
 
-# take feed override min/max values from/to the GUI
-net pdnt.feed-override.value              halui.feed-override.value             whb.halui.feed-override.value    # GUI feed rate related signals
+# take feed override min/max values from/to the GUI / Считывание/задание мин/макс переопределения подачи из GUI
+net pdnt.feed-override.value              halui.feed-override.value             whb.halui.feed-override.value    # GUI feed rate related signals / сигналы подачи из интерфейса
 net pdnt.feed-override.increase           whb.halui.feed-override.increase      halui.feed-override.increase
 net pdnt.feed-override.decrease           whb.halui.feed-override.decrease      halui.feed-override.decrease
 
 
-# axis position related signals feedback
+# axis position related signals feedback / Обратная связь по положению осей
 net pdnt.axis.x.pos-feedback              halui.axis.x.pos-feedback             whb.halui.axis.x.pos-feedback
 net pdnt.axis.y.pos-feedback              halui.axis.y.pos-feedback             whb.halui.axis.y.pos-feedback
 net pdnt.axis.z.pos-feedback              halui.axis.z.pos-feedback             whb.halui.axis.z.pos-feedback
 
 
-# axis position related signals relative
+# axis position related signals relative / Относительные положения осей
 net pdnt.axis.x.pos-relative              halui.axis.x.pos-relative             whb.halui.axis.x.pos-relative
 net pdnt.axis.y.pos-relative              halui.axis.y.pos-relative             whb.halui.axis.y.pos-relative
 net pdnt.axis.z.pos-relative              halui.axis.z.pos-relative             whb.halui.axis.z.pos-relative
-
-
 

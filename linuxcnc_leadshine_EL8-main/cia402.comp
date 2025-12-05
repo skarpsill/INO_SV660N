@@ -1,20 +1,20 @@
 component cia402 "HAL CiA402 Drive interface layer";
 //
-//    Copyright (C) 2019 Dominik Braun <dominik.braun@eventor.de>
+//    Copyright (C) 2019 Dominik Braun <dominik.braun@eventor.de> / Авторское право (C) 2019 Dominik Braun <dominik.braun@eventor.de>
 //
-//    This program is free software; you can redistribute it and/or modify
-//    it under the terms of the GNU General Public License as published by
-//    the Free Software Foundation; either version 2 of the License, or
-//    (at your option) any later version.
+//    This program is free software; you can redistribute it and/or modify / Эта программа является свободным ПО; вы можете распространять и/или изменять ее
+//    it under the terms of the GNU General Public License as published by / на условиях GNU GPL, опубликованной
+//    the Free Software Foundation; either version 2 of the License, or / Фондом свободного ПО; версии 2 лицензии или
+//    (at your option) any later version. / любой более поздней версии.
 //
-//    This program is distributed in the hope that it will be useful,
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//    GNU General Public License for more details.
+//    This program is distributed in the hope that it will be useful, / Эта программа распространяется в надежде, что она будет полезной,
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of / но БЕЗ КАКИХ-ЛИБО ГАРАНТИЙ, даже без подразумеваемых гарантий
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the / пригодности или соответствия определенным целям. См.
+//    GNU General Public License for more details. / текст GNU GPL для подробностей.
 //
-//    You should have received a copy of the GNU General Public License
-//    along with this program; if not, write to the Free Software
-//    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301 USA
+//    You should have received a copy of the GNU General Public License / Вы должны были получить копию GNU GPL
+//    along with this program; if not, write to the Free Software / вместе с этой программой; если нет, напишите в
+//    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301 USA / Free Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 //
 author "Dominik Braun";
 license "GPL";
@@ -92,19 +92,19 @@ If you would like to use the CiA State Machine, connect Statusword and Controlwo
 For single use of the scaling function connect only the fb and cmd pins from position or velocity.\n
 If no Drives homing is needed, let the Pins unconnected.""";
 
-//CiA IOs
-//inputs from drive
+//CiA IOs / CiA интерфейсы ввода-вывода
+//inputs from drive / входы от привода
 pin in unsigned statusword        "Drives CiA402 Statusword, index 0x6041";
 pin in signed opmode_display      "Drives Modes of Operation feedback register, index 0x6061"; 
 pin in signed drv_actual_position "Drives actual Position, index 0x6064";
 pin in signed drv_actual_velocity "Drives actual Velocity, index 0x606C";
-//outputs to drive
+//outputs to drive / выходы к приводу
 pin out unsigned controlword    "Drives CIA402 Controlword, index 0x6040";
 pin out signed opmode           "Drives Modes of Operation Input, index 0x6060";
 pin out signed drv_target_position  "Position command to the drive, index 0x607A";
 pin out signed drv_target_velocity  "Velocity command to the drive, index 0x60FF";
 
-//Control IOs
+//Control IOs / Сигналы управления
 pin in bit enable     "true enables the Drive";
 pin in float pos_cmd  "target Position, from Motion or PID";
 pin in float velocity_cmd "target Velocity, from Motion or PID";
@@ -113,11 +113,11 @@ pin out float pos_fb      "Position feedback, scaled";
 pin out float velocity_fb "Velocity feedback scaled";
 pin out bit drv_fault     "true indicates an Drive Error";
 
-//Homing IOs
+//Homing IOs / Сигналы домашней позиции
 pin io bit home         "true starts the Drives internal home procedure, connect this to joint.x.index-enable pin";
 pin out bit stat_homed  "true indicates that the Drive is internaly homed";
 pin out bit stat_homing "true indicates that the Drives homing procedure is running";
-//Auxilary IOs
+//Auxilary IOs / Дополнительные сигналы
 pin out bit stat_switchon_ready   "Drive in CiA State: ready to switch on";
 pin out bit stat_switched_on      "Drive in CiA State: switched on";
 pin out bit stat_op_enabled       "Drive in CiA State: Operation enabled";
@@ -135,13 +135,13 @@ pin out bit opmode_cyclic_velocity  "Drive in Mode Cyclic synchronus Velocity";
 
 pin in bit fault_reset  "true, sends fault reset command to the Drive";
 
-//parameters
+//parameters / Параметры
 param rw float pos_scale    "increments per machine unit";
 param rw float velo_scale   "velocity in machine units per 1 Motor revolution";
 param rw bit auto_fault_reset "true resets an actual Drive Fault automatically at the next enable Signal";
 param rw bit csp_mode "true= CS Position Mode, false= CS Velocity Mode, is only recognized at Linuxcnc Startup, default true";
 
-//internals
+//internals / Внутренние переменные
 variable float pos_scale_old;
 variable float velo_scale_old;
 variable bool  enable_old;
@@ -154,14 +154,14 @@ variable bool init_pos_mode = 0;
 variable long auto_fault_reset_delay;
 variable int stat_homed_delay;
 
-//declare functions
+//declare functions / Объявление функций
 function read_all;
 function write_all;
 option extra_setup yes;
 
 ;;
 
-//constants
+//constants / Константы
 #define FAULT_AUTORESET_DELAY_NS 100000000LL
 #define OPMODE_CYCLIC_POSITION 8
 #define OPMODE_CYCLIC_VELOCITY 9
@@ -169,7 +169,7 @@ option extra_setup yes;
 #define OPMODE_NONE 0
 
 EXTRA_SETUP ()  {
-  // initialize variables
+  // initialize variables / Инициализация переменных
   pos_scale = 1.0;
   pos_scale_old = pos_scale + 1.0;
   pos_scale_rcpt = 1.0;
@@ -183,39 +183,39 @@ EXTRA_SETUP ()  {
 }
 
 void check_scales(hal_float_t *scale,float *scale_old, double *scale_rcpt) {
-  // check for change in scale value
+  // check for change in scale value / Проверка изменения масштаба
   if (*scale != *scale_old) {
-    // scale value has changed, test and update it
+    // scale value has changed, test and update it / Масштаб изменился, проверяем и обновляем
     if ((*scale < 1e-20) && (*scale > -1e-20)) {
-      // value too small, divide by zero is a bad thing
+      // value too small, divide by zero is a bad thing / Значение слишком мало, деление на ноль недопустимо
       *scale = 1.0;
     }
-    // save new scale to detect future changes
+    // save new scale to detect future changes / Сохраняем новый масштаб для отслеживания будущих изменений
     *scale_old = *scale;
-    // we actually want the reciprocal
+    // we actually want the reciprocal / Нам требуется обратное значение
     *scale_rcpt = 1.0 / *scale;
   }
 }
   
 FUNCTION(read_all) {
 
-  // check for change in scale value
+  // check for change in scale value / Проверка изменения масштаба
   check_scales(&pos_scale, &pos_scale_old, &pos_scale_rcpt);
   check_scales(&velo_scale, &velo_scale_old, &velo_scale_rcpt);
 
-  // read position feedback
+  // read position feedback / Чтение обратной связи по позиции
   pos_fb = ((double)drv_actual_position) * pos_scale_rcpt;
 
-  // read velocity feedback
+  // read velocity feedback / Чтение обратной связи по скорости
   velocity_fb = ((double)drv_actual_velocity) * velo_scale_rcpt;
 
-  // read Modes of Operation
+  // read Modes of Operation / Чтение текущего режима работы
   opmode_no_mode = (opmode_display == OPMODE_NONE);
   opmode_homing = (opmode_display == OPMODE_HOMING);
   opmode_cyclic_velocity = (opmode_display == OPMODE_CYCLIC_VELOCITY);
   opmode_cyclic_position = (opmode_display == OPMODE_CYCLIC_POSITION);
  
-  // read status
+  // read status / Чтение статусного слова
   stat_switchon_ready    = (statusword >> 0) & 1;
   stat_switched_on       = (statusword >> 1) & 1;
   stat_op_enabled        = (statusword >> 2) & 1;
@@ -232,7 +232,7 @@ FUNCTION(read_all) {
       stat_target_reached = 0;
     }
 
-  //home states  
+  //home states / Состояния при поиске дома
   if (opmode_homing) {
 	if (((statusword >> 10) & 1) && ((statusword >> 12) & 1))
 		if (!--stat_homed_delay)
@@ -240,7 +240,7 @@ FUNCTION(read_all) {
     stat_homing   = !stat_homed && !((statusword >> 10) & 1);
   }
 
-  // update fault output
+  // update fault output / Обновление сигнала ошибки
   if (auto_fault_reset_delay > 0) {
     auto_fault_reset_delay -= period;
     drv_fault = 0;
@@ -252,65 +252,64 @@ FUNCTION(read_all) {
 FUNCTION(write_all) {
   int enable_edge;
 
-  //init opmode
+  //init opmode / Инициализация режима работы
   if (!init_pos_mode) {
     pos_mode = csp_mode;
     init_pos_mode = 1;
   }
 
-  // detect enable edge
+  // detect enable edge / Отслеживание фронта разрешения
   enable_edge = enable && !enable_old;
   enable_old = enable;
 
-  // write control register
-  controlword = (1 << 2); // quick stop is not supported
+  // write control register / Запись управляющего слова
+  controlword = (1 << 2); // quick stop is not supported / экстренная остановка не поддерживается
   if (stat_fault) {
     home = 0; 
     if (fault_reset) {
-      controlword |= (1 << 7); // fault reset
+      controlword |= (1 << 7); // fault reset / сброс ошибки
     }
     if (auto_fault_reset && enable_edge) {
       auto_fault_reset_delay = FAULT_AUTORESET_DELAY_NS;
-      controlword |= (1 << 7); // fault reset
+      controlword |= (1 << 7); // fault reset / сброс ошибки
     }
   } else {
     if (enable) {
-      controlword |= (1 << 1); // enable voltage
+      controlword |= (1 << 1); // enable voltage / подача питания
       if (stat_switchon_ready) {
-        controlword |= (1 << 0); // switch on
+        controlword |= (1 << 0); // switch on / включение
         if (stat_switched_on) {
-          controlword |= (1 << 3); // enable op
+          controlword |= (1 << 3); // enable op / разрешение работы
         }
       }
     }
   }
 
-  // write position command
+  // write position command / Запись команды позиции
   drv_target_position = (int32_t) (pos_cmd * pos_scale);
-  // write velocity command
+  // write velocity command / Запись команды скорости
   drv_target_velocity = (int32_t) (velocity_cmd * velo_scale);
 
-  // reset home command   
+  // reset home command / Сброс команды поиска дома
   if (home && (stat_homed && !stat_homed_old) && opmode_homing) {
     home = 0;
   }
   stat_homed_old = stat_homed;  
 
-  // OP Mode 
-  // set to position mode 
+  // OP Mode / Режим работы
+  // set to position mode / Установка режим позиционирования
   if (stat_voltage_enabled && !home ) {
     opmode = OPMODE_CYCLIC_POSITION;
   }
-  // set velo mode
+  // set velo mode / Установка режима скорости
   if (stat_voltage_enabled && !pos_mode && !home) {
     opmode = OPMODE_CYCLIC_VELOCITY;
   }
-  // mode Home and start homing
+  // mode Home and start homing / Режим поиска дома и запуск процедуры
   if (home) {
     opmode = OPMODE_HOMING;
-	// flip bit 4 after opmode change is confirmed
+	// flip bit 4 after opmode change is confirmed / Установить бит 4 после подтверждения смены режима
 	if (opmode_homing)
       controlword |= (home << 4);
   }
 }
-

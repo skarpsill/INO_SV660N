@@ -41,7 +41,7 @@ or by inifile setting: \\fB[EMCMOT]HOMEMOD=user_homecomp\\fR
 https://github.com/LinuxCNC/linuxcnc/blob/BRANCHNAME/src/hal/components/homecomp.comp
 """;
 
-pin out bit is_module=1; //one pin is required to use halcompile)
+pin out bit is_module=1; //one pin is required to use halcompile) / требуется хотя бы один вывод для использования halcompile
 
 license "GPL";
 author "Dewey Garrett";
@@ -49,10 +49,10 @@ option  homemod;
 option  extra_setup;
 ;;
 
-/* To incorporate default homing.c file from a local git src tree:
-** enable #define HOMING_BASE set to the path to the current homing.c file.
-** (Note: CUSTOM_HOMEMODULE precludes duplicate api symbols)
-** (Edit myname as required for valid path)
+/* To incorporate default homing.c file from a local git src tree: / Чтобы подключить стандартный homing.c из локального репозитория:
+** enable #define HOMING_BASE set to the path to the current homing.c file. / установите #define HOMING_BASE на путь к актуальному homing.c.
+** (Note: CUSTOM_HOMEMODULE precludes duplicate api symbols) / (CUSTOM_HOMEMODULE исключает дублирование символов API)
+** (Edit myname as required for valid path) / (Отредактируйте путь под свой каталог)
 */
 
 // #define HOMING_BASE /home/myname/linuxcnc-dev/src/emc/motion/homing.c
@@ -66,7 +66,7 @@ option  extra_setup;
 static char *home_parms;
 RTAPI_MP_STRING(home_parms,"Example home parms");
 
-// EXTRA_SETUP is executed before rtapi_app_main()
+// EXTRA_SETUP is executed before rtapi_app_main() / EXTRA_SETUP выполняется до rtapi_app_main()
 EXTRA_SETUP() {
     if (!home_parms) {home_parms = "no_home_parms";}
     rtapi_print("@@@%s:%s: home_parms=%s\n",__FILE__,__FUNCTION__,home_parms);
@@ -82,10 +82,10 @@ EXTRA_SETUP() {
 }
 
 //=====================================================================
-#ifdef  HOMING_BASE  // { begin CUSTOM example
+#ifdef  HOMING_BASE  // { begin CUSTOM example / начало пользовательского примера
 #define USE_HOMING_BASE XSTR(HOMING_BASE)
 
-// NOTE: CUSTOM_HOMEMODULE: disables duplicate symbols sourced from homing.c
+// NOTE: CUSTOM_HOMEMODULE: disables duplicate symbols sourced from homing.c / CUSTOM_HOMEMODULE отключает дублирующиеся символы из homing.c
 #define CUSTOM_HOMEMODULE
 #include USE_HOMING_BASE
 
@@ -96,10 +96,10 @@ typedef struct {
 
 static custom_home_local_data customH[EMCMOT_MAX_JOINTS];
 
-// data for per-joint custom-homing-specific hal pins:
+// data for per-joint custom-homing-specific hal pins / Данные по выводам HAL для кастомного хоуминга каждой оси:
 typedef struct {
-    hal_bit_t *request_custom_homing; // input  requests custom homing
-    hal_bit_t *is_custom_homing;      // output verifies custom homing
+    hal_bit_t *request_custom_homing; // input  requests custom homing / вход запрашивает кастомный хоуминг
+    hal_bit_t *is_custom_homing;      // output verifies custom homing / выход подтверждает кастомный хоуминг
 } custom_one_joint_home_data_t;
 
 typedef struct {
@@ -139,7 +139,7 @@ static void custom_read_homing_in_pins(int njoints)
         addr = &(custom_joint_home_data->custom_jhd[jno]);
         customH[jno].request_custom_homing = *(addr->request_custom_homing); // IN
 
-        // echo for verification:
+        // echo for verification: / эхо-сигнал для проверки
         customH[jno].is_custom_homing = customH[jno].request_custom_homing;
     }
 }
@@ -150,7 +150,7 @@ static void custom_write_homing_out_pins(int njoints)
     custom_one_joint_home_data_t *addr;
     for (jno = 0; jno < njoints; jno++) {
         addr = &(custom_joint_home_data->custom_jhd[jno]);
-        *(addr->is_custom_homing) = customH[jno].is_custom_homing; // OUT
+        *(addr->is_custom_homing) = customH[jno].is_custom_homing; // OUT / выход
     }
 }
 
@@ -173,21 +173,21 @@ static custom_home_state_t chomestate[EMCMOT_MAX_JOINTS] = {0};
       ,joint_num,H[joint_num].homed,H[joint_num].homing,H[joint_num].home_state \
       ,joint_num,chomestate[joint_num],nextcstate);
 
-    if ( H[joint_num].home_state == HOME_IDLE) return 0; // nothing to do
+    if ( H[joint_num].home_state == HOME_IDLE) return 0; // nothing to do / нечего делать
 
     if ((H[joint_num].home_state == HOME_START) && (chomestate[joint_num] == CUSTOM_IDLE) ) {
         H[joint_num].homing = 1;
         H[joint_num].homed  = 0;
-        chomestate[joint_num] = CUSTOM_1; // set first non-idle custom_home_state
+        chomestate[joint_num] = CUSTOM_1; // set first non-idle custom_home_state / установить первое пользовательское состояние
     }
-    // For this example, just walk thru custom_home_states with prints.
-    // Note: remains in the base home_state: HOME_START for all custom_home_states.
-    //       On completion, return to HOME_IDLE, CUSTOM_IDLE states.
+    // For this example, just walk thru custom_home_states with prints. / В примере просто проходим по состояниям с выводом в консоль.
+    // Note: remains in the base home_state: HOME_START for all custom_home_states. / Замечание: остаемся в базовом состоянии HOME_START для всех кастомных состояний.
+    //       On completion, return to HOME_IDLE, CUSTOM_IDLE states. / По завершении возвращаемся в состояния HOME_IDLE и CUSTOM_IDLE.
     switch (chomestate[joint_num]) {
       case CUSTOM_1:
-                     // Each CUSTOM_* state should do something and/or check something
-                     // and set nexstcstate according to the design goals.
-                     // Halpin variables can be read and/or set for next write.
+                     // Each CUSTOM_* state should do something and/or check something / Каждое состояние CUSTOM_* должно что-то выполнять или проверять
+                     // and set nexstcstate according to the design goals. / и выбирать следующее состояние согласно логике.
+                     // Halpin variables can be read and/or set for next write. / Переменные halpin можно читать/записывать для следующих шагов.
                      nextcstate=CUSTOM_2;    C_SHOW; chomestate[joint_num] = nextcstate; break;
       case CUSTOM_2: nextcstate=CUSTOM_3;    C_SHOW; chomestate[joint_num] = nextcstate; break;
       case CUSTOM_3: nextcstate=CUSTOM_4;    C_SHOW; chomestate[joint_num] = nextcstate; break;
@@ -199,16 +199,16 @@ static custom_home_state_t chomestate[EMCMOT_MAX_JOINTS] = {0};
            nextcstate = CUSTOM_IDLE;
            C_SHOW;
            chomestate[joint_num] = nextcstate;
-           return 0; // finished custom_home_states
+           return 0; // finished custom_home_states / завершил пользовательские состояния
            break;
       case CUSTOM_IDLE:
       default: rtapi_print("Unhandled custom_home_state: %d\n",chomestate[joint_num]);
     }
-    return 1; // return 1 if busy
+    return 1; // return 1 if busy / вернуть 1, если занято
 #undef C_SHOW
 } // custom_1joint_state_machine()
 
-// api functions below augment base_*() functions with custom code
+// api functions below augment base_*() functions with custom code / Ниже функции API дополняют base_*() собственной логикой
 int homing_init(int id,
                 double servo_period,
                 int n_joints,
@@ -237,10 +237,10 @@ void write_homing_out_pins(int njoints)
     custom_write_homing_out_pins(njoints);
 }
 
-/* do_homing() is adapted from homing.c:base_do_homing() augmented
-** with support for custom homing as specified on hal input pin:
-** joint.n.request-custom-homing and echoed on hal output pin
-** joint.n.is-custom-homing
+/* do_homing() is adapted from homing.c:base_do_homing() augmented / do_homing() адаптирована от homing.c:base_do_homing() с расширениями
+** with support for custom homing as specified on hal input pin: / с поддержкой кастомного хоуминга по входу HAL:
+** joint.n.request-custom-homing and echoed on hal output pin / joint.n.request-custom-homing и дублируется на выход joint.n.is-custom-homing
+** joint.n.is-custom-homing / joint.n.is-custom-homing
 */
 bool do_homing(void)
 {
@@ -249,34 +249,34 @@ bool do_homing(void)
     bool beginning_allhomed = get_allhomed();
 
     do_homing_sequence();
-    /* loop thru joints, treat each one individually */
+    /* loop thru joints, treat each one individually / обход осей, обработка каждой отдельно */
     for (joint_num = 0; joint_num < all_joints; joint_num++) {
         if (!H[joint_num].joint_in_sequence)            { continue; }
         if (!GET_JOINT_ACTIVE_FLAG(&joints[joint_num])) { continue; }
 
         if (customH[joint_num].is_custom_homing) {
-            // CUSTOM joint homing state machine:
+            // CUSTOM joint homing state machine: / Пользовательский автомат хоуминга
             homing_flag += custom_1joint_state_machine(joint_num);
         } else {
-            // DEFAULT joint homing state machine:
+            // DEFAULT joint homing state machine: / Базовый автомат хоуминга
             homing_flag += base_1joint_state_machine(joint_num);
         }
     }
-    if ( homing_flag > 0 ) { /* one or more joint is homing */
+    if ( homing_flag > 0 ) { /* one or more joint is homing / хотя бы одна ось находится в хоуминге */
         homing_active = 1;
-    } else { /* is a homing sequence in progress? */
+    } else { /* is a homing sequence in progress? / идет ли сейчас последовательность хоуминга? */
         if (sequence_state == HOME_SEQUENCE_IDLE) {
-            /* no, single joint only, we're done */
+            /* no, single joint only, we're done / нет, была одиночная ось, все завершено */
             homing_active = 0;
         }
     }
-    // return 1 if homing completed this period
+    // return 1 if homing completed this period / вернуть 1, если хоуминг завершился в этот период
     if (!beginning_allhomed && get_allhomed()) {homing_active=0; return 1;}
     return 0;
 }
 
 //===============================================================================
-// functions below use unmodified base_*() implementation
+// functions below use unmodified base_*() implementation / Функции ниже используют неизмененные реализации base_*()
 bool get_allhomed(void)                   { return base_get_allhomed(); }
 bool get_homed(int jno)                   { return base_get_homed(jno); }
 bool get_home_is_idle(int jno)            { return base_get_home_is_idle(jno); }
@@ -324,19 +324,19 @@ void update_joint_homing_params(int    jno,
                                       home_sequence
                                       );
 }
-//           end   CUSTOM example
+//           end   CUSTOM example / конец пользовательского примера
 //=====================================================================
-#else // } { begin SKELETON example minimal api implementation
+#else // } { begin SKELETON example minimal api implementation / начало минимального скелетного примера
 static emcmot_joint_t  *joints;
 
-// data for per-joint homing-specific hal pins:
+// data for per-joint homing-specific hal pins / Данные по выводам HAL для хоуминга каждой оси:
 typedef struct {
-    hal_bit_t *home_sw;      // home switch input
-    hal_bit_t *homing;       // joint is homing
-    hal_bit_t *homed;        // joint was homed
-    hal_bit_t *index_enable; // motmod sets: request reset on index
-                             //        encoder clears: index arrived
-    hal_s32_t *home_state;   // homing state machine state
+    hal_bit_t *home_sw;      // home switch input / вход концевика home
+    hal_bit_t *homing;       // joint is homing / ось выполняет хоуминг
+    hal_bit_t *homed;        // joint was homed / ось уже захоумлена
+    hal_bit_t *index_enable; // motmod sets: request reset on index / motmod выставляет: запрос сброса по индексу
+                             //        encoder clears: index arrived / энкодер сбрасывает: индекс получен
+    hal_s32_t *home_state;   // homing state machine state / состояние автомата хоуминга
 } one_joint_home_data_t;
 
 typedef struct {
@@ -347,7 +347,7 @@ static all_joints_home_data_t *joint_home_data = 0;
 
 static int makepins(int id,int njoints)
 {
-    // home_pins needed to work with configs expecting them:
+    // home_pins needed to work with configs expecting them: / выводы home нужны для конфигураций, которые их ожидают:
     int jno,retval;
     one_joint_home_data_t *addr;
 
@@ -374,7 +374,7 @@ static int makepins(int id,int njoints)
     }
     return retval;
 }
-// All (skeleton) functions required for homing api follow:
+// All (skeleton) functions required for homing api follow: / Ниже все (скелетные) функции, требуемые API хоуминга:
 void homeMotFunctions(void(*pSetRotaryUnlock)(int,int)
                      ,int (*pGetRotaryIsUnlocked)(int)
                      )
@@ -419,10 +419,10 @@ void update_joint_homing_params (int    jno,
                                  int    home_sequence
                                 )                    {return;}
 void write_homing_out_pins(int njoints)              {return;}
-#endif  // } end SKELETON example minimal api implementation
+#endif  // } end SKELETON example minimal api implementation / конец минимального скелетного примера
 //=====================================================================
 
-// all home functions for homing api
+// all home functions for homing api / Экспорт всех функций хоуминга
 EXPORT_SYMBOL(homeMotFunctions);
 
 EXPORT_SYMBOL(homing_init);
