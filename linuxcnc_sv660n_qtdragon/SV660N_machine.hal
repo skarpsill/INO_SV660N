@@ -1,4 +1,3 @@
-loadrt [KINS]KINEMATICS
 loadrt [EMCMOT]EMCMOT servo_period_nsec=[EMCMOT]SERVO_PERIOD num_joints=4
 
 # EtherCAT master + configuration for Inovance SV660N
