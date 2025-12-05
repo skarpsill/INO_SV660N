@@ -8,6 +8,7 @@
       <syncManager idx="2" dir="out">
         <pdo idx="1701">
           <pdoEntry idx="6040" subIdx="00" bitLen="16" halPin="cia-controlword" halType="u32"/>
+          <pdoEntry idx="6060" subIdx="00" bitLen="8"  halPin="opmode" halType="s32"/>
           <pdoEntry idx="607A" subIdx="00" bitLen="32" halPin="target-position" halType="s32"/>
           <pdoEntry idx="60B8" subIdx="00" bitLen="16" halPin="probe-control" halType="s32"/>
           <pdoEntry idx="60FE" subIdx="01" bitLen="32" halPin="digital-output" halType="u32"/>
@@ -18,6 +19,7 @@
         <pdo idx="1b01">
           <pdoEntry idx="603F" subIdx="00" bitLen="16" halPin="error-code" halType="u32"/>
           <pdoEntry idx="6041" subIdx="00" bitLen="16" halPin="cia-statusword" halType="u32"/>
+          <pdoEntry idx="6061" subIdx="00" bitLen="8"  halPin="opmode-display" halType="s32"/>
           <pdoEntry idx="6064" subIdx="00" bitLen="32" halPin="actual-position" halType="s32"/>
           <pdoEntry idx="6077" subIdx="00" bitLen="16" halPin="actual-torque" halType="s32"/>
           <pdoEntry idx="60F4" subIdx="00" bitLen="32" halPin="actual-velocity" halType="s32"/>
@@ -27,8 +29,6 @@
           <pdoEntry idx="60FD" subIdx="00" bitLen="32" halPin="digital-input" halType="u32"/>
         </pdo>
       </syncManager>
-      <!-- Установка режима CSP через SDO (6060 = 8) -->
-      <sdoConfig idx="0x6060" subIdx="00"><sdoData data="8" dataType="INTEGER8"/></sdoConfig>
     </slave>
 
     <!-- Y axis SV660N / Серводрайвер оси Y -->
@@ -46,6 +46,7 @@
         <pdo idx="1b01">
           <pdoEntry idx="603F" subIdx="00" bitLen="16" halPin="error-code" halType="u32"/>
           <pdoEntry idx="6041" subIdx="00" bitLen="16" halPin="cia-statusword" halType="u32"/>
+          <pdoEntry idx="6061" subIdx="00" bitLen="8"  halPin="opmode-display" halType="s32"/>
           <pdoEntry idx="6064" subIdx="00" bitLen="32" halPin="actual-position" halType="s32"/>
           <pdoEntry idx="6077" subIdx="00" bitLen="16" halPin="actual-torque" halType="s32"/>
           <pdoEntry idx="60F4" subIdx="00" bitLen="32" halPin="actual-velocity" halType="s32"/>
@@ -55,7 +56,6 @@
           <pdoEntry idx="60FD" subIdx="00" bitLen="32" halPin="digital-input" halType="u32"/>
         </pdo>
       </syncManager>
-      <sdoConfig idx="0x6060" subIdx="00"><sdoData data="8" dataType="INTEGER8"/></sdoConfig>
     </slave>
 
     <!-- Z axis SV660N / Серводрайвер оси Z -->
@@ -64,6 +64,7 @@
       <syncManager idx="2" dir="out">
         <pdo idx="1701">
           <pdoEntry idx="6040" subIdx="00" bitLen="16" halPin="cia-controlword" halType="u32"/>
+          <pdoEntry idx="6060" subIdx="00" bitLen="8"  halPin="opmode" halType="s32"/>
           <pdoEntry idx="607A" subIdx="00" bitLen="32" halPin="target-position" halType="s32"/>
           <pdoEntry idx="60B8" subIdx="00" bitLen="16" halPin="probe-control" halType="s32"/>
           <pdoEntry idx="60FE" subIdx="01" bitLen="32" halPin="digital-output" halType="u32"/>
@@ -73,6 +74,7 @@
         <pdo idx="1b01">
           <pdoEntry idx="603F" subIdx="00" bitLen="16" halPin="error-code" halType="u32"/>
           <pdoEntry idx="6041" subIdx="00" bitLen="16" halPin="cia-statusword" halType="u32"/>
+          <pdoEntry idx="6061" subIdx="00" bitLen="8"  halPin="opmode-display" halType="s32"/>
           <pdoEntry idx="6064" subIdx="00" bitLen="32" halPin="actual-position" halType="s32"/>
           <pdoEntry idx="6077" subIdx="00" bitLen="16" halPin="actual-torque" halType="s32"/>
           <pdoEntry idx="60F4" subIdx="00" bitLen="32" halPin="actual-velocity" halType="s32"/>
@@ -82,15 +84,15 @@
           <pdoEntry idx="60FD" subIdx="00" bitLen="32" halPin="digital-input" halType="u32"/>
         </pdo>
       </syncManager>
-      <sdoConfig idx="0x6060" subIdx="00"><sdoData data="8" dataType="INTEGER8"/></sdoConfig>
     </slave>
 
-    <!-- Spindle SV660N / Шпиндель -->
+    <!-- A axis SV660N / Серводрайвер оси A -->
     <slave idx="3" type="generic" vid="00100000" pid="000c010d" configPdos="true">
       <dcConf assignActivate="300" sync0Cycle="*1" sync0Shift="0"/>
       <syncManager idx="2" dir="out">
         <pdo idx="1701">
           <pdoEntry idx="6040" subIdx="00" bitLen="16" halPin="cia-controlword" halType="u32"/>
+          <pdoEntry idx="6060" subIdx="00" bitLen="8"  halPin="opmode" halType="s32"/>
           <pdoEntry idx="607A" subIdx="00" bitLen="32" halPin="target-position" halType="s32"/>
           <pdoEntry idx="60B8" subIdx="00" bitLen="16" halPin="probe-control" halType="s32"/>
           <pdoEntry idx="60FE" subIdx="01" bitLen="32" halPin="digital-output" halType="u32"/>
@@ -100,6 +102,7 @@
         <pdo idx="1b01">
           <pdoEntry idx="603F" subIdx="00" bitLen="16" halPin="error-code" halType="u32"/>
           <pdoEntry idx="6041" subIdx="00" bitLen="16" halPin="cia-statusword" halType="u32"/>
+          <pdoEntry idx="6061" subIdx="00" bitLen="8"  halPin="opmode-display" halType="s32"/>
           <pdoEntry idx="6064" subIdx="00" bitLen="32" halPin="actual-position" halType="s32"/>
           <pdoEntry idx="6077" subIdx="00" bitLen="16" halPin="actual-torque" halType="s32"/>
           <pdoEntry idx="60F4" subIdx="00" bitLen="32" halPin="actual-velocity" halType="s32"/>
@@ -109,7 +112,6 @@
           <pdoEntry idx="60FD" subIdx="00" bitLen="32" halPin="digital-input" halType="u32"/>
         </pdo>
       </syncManager>
-      <sdoConfig idx="0x6060" subIdx="00"><sdoData data="8" dataType="INTEGER8"/></sdoConfig>
     </slave>
 
   </master>
