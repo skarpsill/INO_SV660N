@@ -1,27 +1,29 @@
 # Конфигурация LinuxCNC + Inovance SV660N (QtDragon)
 
-Быстрый старт на основе примера `linuxcnc_leadshine_EL8-main`, адаптирован для приводов Inovance SV660N и интерфейса QtDragon.
+Готовый набор INI/HAL под QtDragon и EtherCAT (lcec) для 4 осей (XYZ + шпиндель S) на приводах SV660N.
 
-## Файлы
-- `SV660N_machine.ini` — INI c 4 суставами (XYZ + шпиндель S), DISPLAY=qtdragon.
-- `SV660N_machine.hal` — основной HAL: EtherCAT (lcec), 4 драйва SV660N через `cia402`, шпиндель в режимах скорости, утилиты near/dbounce/servospindle.
-- `ethercat-sv660n.xml` — карта EtherCAT для 4 приводов SV660N (Vendor `0x00100000`, Product `0x000c010d`) с PDO под CiA402 (6040/6041, 6060/6061, 607A, 60FF, 6064, 606C, 6077).
+## Быстрый запуск QtDragon
+1) Установите компоненты (один раз):
+```bash
+halcompile --install linuxcnc_sv660n_qtdragon/cia402.comp
+halcompile --install linuxcnc_sv660n_qtdragon/servospindle.comp
+halcompile --install linuxcnc_sv660n_qtdragon/always_homed.comp
+```
+2) Убедитесь, что EtherCAT master (IgH/lcec) работает и видит 4 слейва SV660N (vid `0x00100000`, pid `0x000c010d`).
+3) Запуск QtDragon с этой конфигурацией:
+```bash
+linuxcnc linuxcnc_sv660n_qtdragon/SV660N_machine.ini
+```
+QtDragon сам подхватится как DISPLAY. Если нужна своя копия штатной конфигурации QtDragon на 4 оси — скажи, скопируем дефолтный каталог и укажем, что править; пока используется стандартный QtDragon из LinuxCNC.
 
-## Использование
-1. Соберите/установите компоненты, если еще не установлены:
-   ```bash
-   halcompile --install linuxcnc_leadshine_EL8-main/cia402.comp
-   halcompile --install linuxcnc_leadshine_EL8-main/servospindle.comp
-   halcompile --install linuxcnc_leadshine_EL8-main/always_homed.comp
-   ```
-2. Запустите конфигурацию:
-   ```bash
-   linuxcnc linuxcnc_sv660n_qtdragon/SV660N_machine.ini
-   ```
-3. В QtDragon настройте HAL-пины/MDI по необходимости.
+## Ключевые файлы
+- `SV660N_machine.ini` — 4 сустава, DISPLAY=qtdragon, HOMEMOD=always_homed.
+- `SV660N_machine.hal` — EtherCAT + 4×`cia402` (CSP), `servospindle` для шпинделя, near/dbounce.
+- `ethercat-sv660n.xml` — PDO из выгрузок SV660N: Rx 1701 → 6040, 607A, 60B8, 60FE:01; Tx 1B01 → 603F, 6041, 6064, 6077, 60F4, 60B9, 60BA, 60BC, 60FD; SDO 6060=8 (CSP).
+- `xhc-whb04b.hal`, `pyvcp_panel.*` — опционально, если используете пульт или панель.
 
-## Что подстроить
-- Масштабы `pos-scale` и направление осей в `SV660N_machine.hal` (setp cia402.*.pos-scale).
-- Лимиты и скорости в `SV660N_machine.ini`.
-- PDO под реальные карты привода — при необходимости скорректируйте `ethercat-sv660n.xml` (например, добавить 606C/60FF, если заводские PDO другие).
-- Homing: сейчас стоит `HOMEMOD=always_homed` для упрощения; подключите реальные датчики при необходимости.
+## Что подстроить под станок
+- Масштаб/знак осей: `setp cia402.*.pos-scale` в `SV660N_machine.hal`.
+- Лимиты/скорости: секции `[AXIS_*]/[JOINT_*]` в INI.
+- PDO/SDO: если реальная карта другая, правьте `ethercat-sv660n.xml` (например, добавить 60FF/606C/6061).
+- Homing: вместо `always_homed` подключить датчики/кастомный homecomp при необходимости.
