@@ -10,23 +10,7 @@ loadusr -W hal_manualtoolchange
 
 # CiA402 drive interface (shared with SV660N)
 loadrt cia402 count=4
-loadrt servospindle
 
-# Utility components
-loadrt mult2 count=4
-loadrt near
-loadrt dbounce
-loadrt conv_s32_float count=5
-
-addf servospindle.0              servo-thread
-addf mult2.0                     servo-thread
-addf mult2.1                     servo-thread
-addf mult2.2                     servo-thread
-addf mult2.3                     servo-thread
-addf dbounce.0                   servo-thread
-addf near.0                      servo-thread
-addf conv-s32-float.3            servo-thread
-addf conv-s32-float.4            servo-thread
 addf lcec.read-all               servo-thread
 addf cia402.0.read-all           servo-thread
 addf cia402.1.read-all           servo-thread
@@ -50,42 +34,26 @@ net tool-change-req iocontrol.0.tool-change => hal_manualtoolchange.change
 net tool-change-confirm hal_manualtoolchange.changed => iocontrol.0.tool-changed
 
 #*******************
-#  Spindle S / Шпиндель
+#  AXIS A / Ось A (линейная подачa герметика)
 #*******************
-setp cia402.3.csp-mode 0
+setp cia402.3.csp-mode 1
+setp cia402.3.pos-scale 10000
 setp cia402.3.opmode-display 8
-net spindle-rpm-cmd             spindle.0.speed-out => mult2.1.in0
-setp mult2.1.in1 100
-net spindle-rpm-cmd-scaled      mult2.1.out => cia402.3.velocity-cmd
 
-net spindle-rpm-fb              cia402.3.velocity-fb => mult2.2.in0
-setp mult2.2.in1 0.01
-net spindle-rpm-fb-scaled       mult2.2.out => spindle.0.speed-in
-net spindle-startsignal         joint.3.amp-enable-out => cia402.3.enable
-net spindle-amp-fault           joint.3.amp-fault-in   <= cia402.3.drv_fault
+# joint signals for motion / Сигналы привода оси
+net a-pos-cmd     joint.3.motor-pos-cmd => cia402.3.pos-cmd
+net a-pos-fb      joint.3.motor-pos-fb <= cia402.3.pos-fb
+net a-enable      joint.3.amp-enable-out => cia402.3.enable
+net a-amp-fault   joint.3.amp-fault-in   <= cia402.3.drv_fault
 
-# spindle at speed supervision / Контроль достижения оборотов шпинделя
-net spindle-rpm-cmd => near.0.in1
-net spindle-rpm-fb-scaled => near.0.in2
-setp near.0.scale 1.02
-net spindle-at-speed-to-debounce dbounce.0.in <= near.0.out
-setp dbounce.0.delay 10000
-net spindle-at-speed-from-debounce dbounce.0.out => spindle.0.at-speed
+# ethercat to cia402 driver / Связь EtherCAT с драйвером CiA402
+net a-statusword      lcec.0.3.cia-statusword  => cia402.3.statusword
+net a-drv-act-pos     lcec.0.3.actual-position => cia402.3.drv-actual-position
+net a-drv-act-vel     lcec.0.3.actual-velocity => cia402.3.drv-actual-velocity
 
-# hal encoder workaround for rigid tapping / Обходное решение для жесткого нарезания резьбы
-net spindle-index-enable servospindle.0.index-enable <=> spindle.0.index-enable
-net spindle-pos-fb-scaled mult2.0.out => servospindle.0.pos-input
-net servospindle-pos-fb servospindle.0.pos-output => spindle.0.revs
-
-# EtherCAT <-> CiA402 mapping for spindle (PDO из выгрузки)
-net spindle-statusword      lcec.0.3.cia-statusword  => cia402.3.statusword
-net spindle-pos-fb          lcec.0.3.actual-position => conv-s32-float.4.in
-net spindle-pos-fb-floated  conv-s32-float.4.out => mult2.0.in0
-setp mult2.0.in1 1
-net spindle-drv-act-vel     lcec.0.3.actual-velocity => cia402.3.drv-actual-velocity
-
-net spindle-controlword         cia402.3.controlword         => lcec.0.3.cia-controlword
-net spindle-drv-target-pos      cia402.3.drv-target-position => lcec.0.3.target-position
+# cia402 driver to ethercat / Драйвер CiA402 к EtherCAT
+net a-controlword         cia402.3.controlword         => lcec.0.3.cia-controlword
+net a-drv-target-pos      cia402.3.drv-target-position => lcec.0.3.target-position
 
 #*******************
 #  AXIS X / Ось X
